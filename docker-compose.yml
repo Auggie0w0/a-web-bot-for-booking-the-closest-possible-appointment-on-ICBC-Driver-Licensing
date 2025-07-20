@@ -7,8 +7,8 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      # Mount config.js so you can edit it without rebuilding the image
-      - ./src/config.js:/usr/src/app/src/config.js
+      # Use config-sample.js instead of config.js
+      - ./src/config-sample.js:/usr/src/app/src/config.js
       # Mount a volume for persistent browser data
       - browser-data:/home/appuser/.cache
     restart: unless-stopped

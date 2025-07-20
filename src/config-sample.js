@@ -1,9 +1,9 @@
-// rename this file to config.js
+// This file will be used directly by Docker
 
 // --------------- Your Credentials ---------------
 export const lastName = "LAM";
 export const driverLicenseNumber = "02041185";
-export const keyWord = "Class 7 Road Test";
+export const keyWord = "lam";
 
 // --------------- Location ---------------
 // To select the driving centre you want (e.g. North Vancouver ICBC), you can specify its details below.
@@ -17,21 +17,16 @@ export const cityFullName = citySpelledOut.join(""); // "North Vancouver, BC"
 // For North Vancouver ICBC, the address is typically "1331 Marine Dr".
 export const branchStreetNames = ["1331 Marine Dr"]; // e.g. ["1331 Marine Dr"]
 
-// If you have a centre number or code from ICBC, you can use it in your search logic elsewhere, but here you specify the name/address.
-
 // --------------- IMAP for Email Automation --------------- (optional - For Full Automation)
 export const email = "auggieldoggie@gmail.com";
 export const passwordOfEmail = "RG=u,8UsO7>u";
-export const imapServer = "IMAP SERVER";
+export const imapServer = "imap.gmail.com";
 export const imapPort = 993;
 
 // --------------- Logic for finding appointment ---------------
 // You can add/remove more logic here to decide if the appointment is accepted or not.
 export const logic = (acceptIfIs) =>
-  acceptIfIs.Between("2022-06-28", "2022-07-05") || // If it was between June 28th and July 5th
-  acceptIfIs.On("2022-06-28") || // Or If it was on June 28th
-  acceptIfIs.After("2022-06-28") || // Or If it was after June 28th
-  acceptIfIs.Before("2022-07-05"); // Or If it was before July 5th
+  acceptIfIs.After(new Date().toISOString().split('T')[0]); // Accept any appointment after today
 
 // --------------- Intervals and waiting times (times are in milliseconds) ---------------
 export const intervalBetweenEachRefresh = 1000; // Time between each refresh during active searching
