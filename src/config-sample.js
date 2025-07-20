@@ -27,7 +27,15 @@ export const logic = (acceptIfIs) =>
   acceptIfIs.Before("2022-07-05"); // Or If it was before July 5th
 
 // --------------- Intervals and waiting times (times are in milliseconds) ---------------
-export const intervalBetweenEachRefresh = 1000; //
+export const intervalBetweenEachRefresh = 1000; // Time between each refresh during active searching
+
+// --------------- Anti-Rate Limiting Protection ---------------
+export const checkInterval = 30 * 60 * 1000; // 30 minutes between each check cycle
+export const enableRandomDelay = true; // Add random delay to avoid detection
+export const minRandomDelay = 5 * 1000; // Minimum random delay (5 seconds)
+export const maxRandomDelay = 15 * 1000; // Maximum random delay (15 seconds)
+export const maxAttemptsBeforeBreak = 10; // Maximum attempts before taking a longer break
+export const breakDuration = 5 * 60 * 1000; // 5 minute break after max attempts
 
 // Fetching verification code from email
 export const totalAttemptsForFetchingVerificationCode = 3;

@@ -13,6 +13,12 @@ import {
   totalAttemptsForFetchingVerificationCode,
   intervalBetweenEachFetchingVerificationCodeFromEmail,
   promptMeAndWaitForMyRestartCall,
+  checkInterval,
+  enableRandomDelay,
+  minRandomDelay,
+  maxRandomDelay,
+  maxAttemptsBeforeBreak,
+  breakDuration,
 } from "../config.js";
 import { sleep, getDateFromText } from "../helpers.js";
 import approvementLogic from "../approvementLogic.js";
@@ -31,6 +37,8 @@ class WebDriverHelper {
   static attempt = 1;
   lastDateText = null;
   initialized = false;
+  attemptsInCurrentCycle = 0;
+  lastCheckTime = 0;
 
   async initialize() {
     if (this.browser) {
@@ -43,6 +51,15 @@ class WebDriverHelper {
     this.page = await this.browser.newPage();
     this.page.setViewport({ width: 1280, height: 720 });
     this.initialized = true;
+  }
+
+  // Add random delay to avoid detection patterns
+  async addRandomDelay() {
+    if (enableRandomDelay) {
+      const delay = Math.floor(Math.random() * (maxRandomDelay - minRandomDelay + 1)) + minRandomDelay;
+      logWithTimestamp(`Adding random delay of ${delay/1000} seconds to avoid detection...`);
+      await sleep(delay);
+    }
   }
 
   async closeSurveyPopup() {
@@ -62,13 +79,20 @@ class WebDriverHelper {
       const errorMessageElement = await this.page.$(
         "xpath=//span[contains(text(), 'Hmm, looks like something went wrong on our end. Please try again later.')]"
       );
-      if (errorMessageElement.length > 0) {
-        logWithTimestamp("Soft ban detected. Waiting for 1 hour...");
-        await sleep(60 * 60 * 1000);
+      if (errorMessageElement) {
+        logWithTimestamp("⚠️ Soft ban detected. Waiting for 1 hour before trying again...");
+        notifier.notify({
+          title: 'ICBC Bot - Rate Limit Detected',
+          message: 'Your IP might be rate limited. Taking a break for 1 hour.',
+          sound: true
+        });
+        await sleep(60 * 60 * 1000); // 1 hour
+        return true;
       }
     } catch (error) {
       logWithTimestamp("Error while checking for soft ban message:", error);
     }
+    return false;
   }
 
   async getButtonFoundLocation(branchStreetName) {
@@ -224,8 +248,25 @@ class WebDriverHelper {
   }
 
   async findAppointment() {
+    this.lastCheckTime = Date.now();
+    
     while (true) {
       let foundAppointment = false;
+      
+      // Check if we need to wait before starting a new check cycle
+      const currentTime = Date.now();
+      const timeSinceLastCheck = currentTime - this.lastCheckTime;
+      
+      if (timeSinceLastCheck < checkInterval) {
+        const waitTime = checkInterval - timeSinceLastCheck;
+        logWithTimestamp(`Waiting ${Math.round(waitTime/1000/60)} minutes before next check cycle (30-minute interval)...`);
+        await sleep(waitTime);
+      }
+      
+      this.lastCheckTime = Date.now();
+      this.attemptsInCurrentCycle = 0;
+      
+      logWithTimestamp("Starting new check cycle...");
 
       for (const branchStreetName of branchStreetNames) {
         let buttonFoundLocation;
@@ -242,14 +283,35 @@ class WebDriverHelper {
         }
 
         let isAppointmentFoundResult;
-
+        
         while (true) {
           try {
             await this.closeSurveyPopup();
+            
+            // Check if we need to take a break after max attempts
+            this.attemptsInCurrentCycle++;
+            if (this.attemptsInCurrentCycle >= maxAttemptsBeforeBreak) {
+              logWithTimestamp(`Reached ${maxAttemptsBeforeBreak} attempts, taking a ${breakDuration/1000/60} minute break to avoid rate limiting...`);
+              await sleep(breakDuration);
+              this.attemptsInCurrentCycle = 0;
+            }
+            
+            // Add random delay to avoid detection patterns
+            await this.addRandomDelay();
+            
             try {
               isAppointmentFoundResult = await this.isAppointmentFound(buttonFoundLocation);
             } catch (err) {
               logWithTimestamp(`Error during isAppointmentFound:`, err);
+              this.initialized = false;
+              await this.initialize();
+              buttonFoundLocation = await this.getButtonFoundLocation(branchStreetName);
+              continue;
+            }
+
+            // Check for soft ban after each attempt
+            const isBanned = await this.checkForSoftBan();
+            if (isBanned) {
               this.initialized = false;
               await this.initialize();
               buttonFoundLocation = await this.getButtonFoundLocation(branchStreetName);
@@ -291,8 +353,7 @@ class WebDriverHelper {
       }
 
       if (!foundAppointment) {
-        logWithTimestamp("Sleeping for 10 minutes before the next round of attempts...");
-        await sleep(10 * 60 * 1000); // Sleep for 10 minutes before the next round of attempts
+        logWithTimestamp(`Check cycle completed. Waiting ${checkInterval/1000/60} minutes before next cycle...`);
       }
     }
   }
