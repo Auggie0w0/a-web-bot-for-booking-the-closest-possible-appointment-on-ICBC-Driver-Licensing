@@ -23,6 +23,12 @@ export const monthsList = {
   December: 11,
 };
 
+// Helper function to log messages with timestamps
+export const logWithTimestamp = (...messages) => {
+  const timestamp = new Date().toLocaleString();
+  console.log(`[${timestamp}]`, ...messages);
+};
+
 export const getDateFromText = (dateText) => {
   const arrayDate = dateText.split(",");
 

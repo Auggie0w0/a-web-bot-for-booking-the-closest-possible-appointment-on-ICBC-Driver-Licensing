@@ -23,6 +23,27 @@ The philosophy of this software is that you have this automated tool that refres
 
 5. There are other configurations you can change in `config.js` as well. Feel free to take a look at and maybe change them as you see fit.
 
+## Anti-Rate Limiting Protection
+
+The bot now includes features to prevent IP rate limiting:
+
+- **30-minute check interval**: The bot will only check for appointments every 30 minutes by default
+- **Random delays**: Adds unpredictable delays between actions to avoid detection
+- **Automatic breaks**: Takes breaks after a certain number of attempts
+- **Soft ban detection**: Automatically detects if your IP is temporarily banned and waits accordingly
+
+You can adjust these settings in the `config.js` file:
+
+```javascript
+// Anti-Rate Limiting Protection
+export const checkInterval = 30 * 60 * 1000; // 30 minutes between each check cycle
+export const enableRandomDelay = true; // Add random delay to avoid detection
+export const minRandomDelay = 5 * 1000; // Minimum random delay (5 seconds)
+export const maxRandomDelay = 15 * 1000; // Maximum random delay (15 seconds)
+export const maxAttemptsBeforeBreak = 10; // Maximum attempts before taking a longer break
+export const breakDuration = 5 * 60 * 1000; // 5 minute break after max attempts
+```
+
 ## For it to automatically read your email inbox, enable the IMAP protocol and turn on the "allow for less-secure apps" in your settings.
 For Gmail:
 * https://support.google.com/accounts/answer/6010255?hl=en

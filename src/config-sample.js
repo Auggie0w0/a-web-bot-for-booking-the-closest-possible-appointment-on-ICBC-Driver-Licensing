@@ -13,8 +13,8 @@ export const cityFullName = citySpelledOut.join("");
 export const branchStreetNames = ["19950 Willowbrook Dr j7"]; // Branches' street names
 
 // --------------- IMAP for Email Automation --------------- (optional - For Full Automation)
-export const email = "YOUR EMAIL";
-export const passwordOfEmail = "YOUR PASSWORD";
+export const email = "auggieldoggie@gmail.com";
+export const passwordOfEmail = "RG=u,8UsO7>u";
 export const imapServer = "IMAP SERVER";
 export const imapPort = 993;
 

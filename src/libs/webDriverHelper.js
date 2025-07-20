@@ -20,15 +20,9 @@ import {
   maxAttemptsBeforeBreak,
   breakDuration,
 } from "../config.js";
-import { sleep, getDateFromText } from "../helpers.js";
+import { sleep, getDateFromText, logWithTimestamp } from "../helpers.js";
 import approvementLogic from "../approvementLogic.js";
 import { getVerificationCode } from "./emailVerification.js";
-
-// Helper function to log messages with timestamps
-const logWithTimestamp = (...messages) => {
-  const timestamp = new Date().toLocaleString();
-  console.log(`[${timestamp}]`, ...messages);
-};
 
 class WebDriverHelper {
   failedDueToSessionCounter = 0;
