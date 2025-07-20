@@ -6,6 +6,11 @@ services:
     container_name: icbc-appointment-bot
     environment:
       - NODE_ENV=production
+      # Email notification settings - replace with your actual email
+      - NOTIFICATION_EMAIL=auggieldoggie@gmail.com
+      - GMAIL_USER=auggieldoggie@gmail.com
+      # Use an app-specific password for Gmail: https://support.google.com/accounts/answer/185833
+      - GMAIL_APP_PASSWORD=your_app_specific_password_here
     volumes:
       # Use config.js now that we've copied the file
       - ./src/config.js:/usr/src/app/src/config.js

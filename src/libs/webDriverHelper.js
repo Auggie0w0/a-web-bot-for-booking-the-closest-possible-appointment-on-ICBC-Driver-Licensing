@@ -23,6 +23,7 @@ import {
 import { sleep, getDateFromText, logWithTimestamp } from "../helpers.js";
 import approvementLogic from "../approvementLogic.js";
 import { getVerificationCode } from "./emailVerification.js";
+import { sendAppointmentNotification } from "./emailNotification.js";
 
 class WebDriverHelper {
   failedDueToSessionCounter = 0;
@@ -513,6 +514,15 @@ class WebDriverHelper {
     const isApproved = approvementLogic(date, dateText);
     if (isApproved) {
       logWithTimestamp(`Appointment Found!!! ----- ${dateText} -----`);
+      
+      // Send email notification
+      try {
+        await sendAppointmentNotification(date, cityFullName);
+        logWithTimestamp('Email notification sent successfully.');
+      } catch (error) {
+        logWithTimestamp('Failed to send email notification:', error);
+      }
+      
       return date;
     }
 
