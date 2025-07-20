@@ -18,10 +18,10 @@ export const cityFullName = citySpelledOut.join(""); // "North Vancouver, BC"
 export const branchStreetNames = ["1331 Marine Dr"]; // e.g. ["1331 Marine Dr"]
 
 // --------------- IMAP for Email Automation --------------- (optional - For Full Automation)
-// For Gmail, you need to use an app-specific password: https://support.google.com/accounts/answer/185833
-// The email verification is optional - the bot will still work without it, but you'll need to enter verification codes manually
-export const email = ""; // Leave empty to disable email verification
-export const passwordOfEmail = ""; // Leave empty to disable email verification
+// Email verification is disabled to avoid authentication errors
+// To enable, provide valid email credentials including an app-specific password for Gmail
+export const email = null; // Set to null to completely disable email verification
+export const passwordOfEmail = null; // Set to null to completely disable email verification
 export const imapServer = "imap.gmail.com";
 export const imapPort = 993;
 
@@ -42,10 +42,10 @@ export const maxAttemptsBeforeBreak = 10; // Maximum attempts before taking a lo
 export const breakDuration = 5 * 60 * 1000; // 5 minute break after max attempts
 
 // Fetching verification code from email
-export const totalAttemptsForFetchingVerificationCode = 3;
-export const intervalBetweenEachFetchingVerificationCodeFromEmail = 1000; // (can be 0)
+export const totalAttemptsForFetchingVerificationCode = 0; // Set to 0 to skip email verification attempts
+export const intervalBetweenEachFetchingVerificationCodeFromEmail = 1000;
 
 // --------------- Prompt for user input ---------------
-// Set this to true if you want to manually enter verification codes
+// Set this to true since we're not using email verification
 export const promptMeAndWaitForMyRestartCall = true; // If true, the bot will wait for your call to either enter the validation code MANUALLY or continue looking for appointment.
 // If false, the bot will just restart the process and tries to find an appointment from scratch, again. (It won't stop and wait for your call).
