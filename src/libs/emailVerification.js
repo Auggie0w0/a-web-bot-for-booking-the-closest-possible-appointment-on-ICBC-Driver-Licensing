@@ -3,17 +3,26 @@ import { simpleParser } from "mailparser";
 
 import { email, passwordOfEmail, imapServer, imapPort } from "../config.js";
 
-const imapConfig = {
+// Check if email verification is enabled
+const isEmailVerificationEnabled = email !== null && passwordOfEmail !== null && email !== '' && passwordOfEmail !== '';
+
+const imapConfig = isEmailVerificationEnabled ? {
   user: email,
   password: passwordOfEmail,
   host: imapServer,
   port: imapPort,
   tls: true,
   tlsOptions: { rejectUnauthorized: false },
-};
+} : null;
 
 export const getVerificationCode = () =>
   new Promise((resolve, reject) => {
+    // If email verification is disabled, return immediately
+    if (!isEmailVerificationEnabled) {
+      console.log("Email verification is disabled. Skipping email check.");
+      return resolve("No Email");
+    }
+    
     try {
       const imap = new Imap(imapConfig);
       imap.once("ready", () => {
@@ -70,11 +79,14 @@ export const getVerificationCode = () =>
     }
   });
 
-try {
-  const result = await getVerificationCode();
-  console.log("result", result);
-} catch (e) {
-  console.log(e);
-  console.log(imapConfig);
-  console.log(`ERROR:`, e);
+// Only run this code if email verification is enabled
+if (isEmailVerificationEnabled) {
+  try {
+    const result = await getVerificationCode();
+    console.log("result", result);
+  } catch (e) {
+    console.log(e);
+    console.log(imapConfig);
+    console.log(`ERROR:`, e);
+  }
 }
