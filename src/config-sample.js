@@ -1,16 +1,23 @@
 // rename this file to config.js
 
 // --------------- Your Credentials ---------------
-export const lastName = "YOUR LAST NAME";
-export const driverLicenseNumber = "YOUR DRIVER LICENSE #";
-export const keyWord = "YOUR KEYWORD";
+export const lastName = "LAM";
+export const driverLicenseNumber = "02041185";
+export const keyWord = "Class 7 Road Test";
 
 // --------------- Location ---------------
-export const citySpelledOut = ["Surr", "ey", ", BC"]; // Location's name (Spelled-out) e.g. Surrey, BC -> ["Surr", "ey", "BC"]
-// const cityFullName = "Surrey, BC"; // IF The bottom one didn't work, try spelling this fully and not spelling the whole thing at the top. (eg. try "Surr", "ey" OR different variations).
-export const cityFullName = citySpelledOut.join("");
+// To select the driving centre you want (e.g. North Vancouver ICBC), you can specify its details below.
+// If you know the exact name or address as it appears on the ICBC site, use that for best results.
 
-export const branchStreetNames = ["19950 Willowbrook Dr j7"]; // Branches' street names
+// Example for North Vancouver ICBC:
+export const citySpelledOut = ["North", " Vancouver", ", BC"]; // e.g. ["North", " Vancouver", ", BC"]
+export const cityFullName = citySpelledOut.join(""); // "North Vancouver, BC"
+
+// You can also specify the branch's street name as it appears on the ICBC site.
+// For North Vancouver ICBC, the address is typically "1331 Marine Dr".
+export const branchStreetNames = ["1331 Marine Dr"]; // e.g. ["1331 Marine Dr"]
+
+// If you have a centre number or code from ICBC, you can use it in your search logic elsewhere, but here you specify the name/address.
 
 // --------------- IMAP for Email Automation --------------- (optional - For Full Automation)
 export const email = "auggieldoggie@gmail.com";

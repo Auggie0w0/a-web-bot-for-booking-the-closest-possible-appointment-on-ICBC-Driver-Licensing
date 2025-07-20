@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  icbc-bot:
+    build: .
+    container_name: icbc-appointment-bot
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # Mount config.js so you can edit it without rebuilding the image
+      - ./src/config.js:/usr/src/app/src/config.js
+      # Mount a volume for persistent browser data
+      - browser-data:/home/appuser/.cache
+    restart: unless-stopped
+    # Puppeteer needs these capabilities to run in Docker
+    cap_add:
+      - SYS_ADMIN
+    # Use host network to avoid proxy issues
+    network_mode: host
+
+volumes:
+  browser-data: 

@@ -44,6 +44,35 @@ export const maxAttemptsBeforeBreak = 10; // Maximum attempts before taking a lo
 export const breakDuration = 5 * 60 * 1000; // 5 minute break after max attempts
 ```
 
+## Running with Docker
+
+You can run the bot in a Docker container to isolate it from your system and make it easier to manage:
+
+### Prerequisites
+- Docker and Docker Compose installed on your system
+
+### Steps to run with Docker
+
+1. Make sure you've created your `src/config.js` file with your personal settings
+2. Build and start the container:
+   ```
+   docker-compose up -d
+   ```
+3. View the logs:
+   ```
+   docker-compose logs -f
+   ```
+4. Stop the bot:
+   ```
+   docker-compose down
+   ```
+
+The Docker setup will:
+- Mount your config.js file so you can edit it without rebuilding the image
+- Keep the browser data persistent between restarts
+- Automatically restart if it crashes
+- Run with the necessary permissions for Puppeteer
+
 ## For it to automatically read your email inbox, enable the IMAP protocol and turn on the "allow for less-secure apps" in your settings.
 For Gmail:
 * https://support.google.com/accounts/answer/6010255?hl=en

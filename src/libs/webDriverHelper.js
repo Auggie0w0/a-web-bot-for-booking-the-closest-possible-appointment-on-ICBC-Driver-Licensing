@@ -41,6 +41,17 @@ class WebDriverHelper {
 
     this.browser = await puppeteer.launch({
       headless: false,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--disable-gpu',
+        '--window-size=1280,720',
+        '--disable-features=IsolateOrigins,site-per-process'
+      ],
     });
     this.page = await this.browser.newPage();
     this.page.setViewport({ width: 1280, height: 720 });
