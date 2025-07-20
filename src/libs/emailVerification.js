@@ -6,6 +6,7 @@ import { email, passwordOfEmail, imapServer, imapPort } from "../config.js";
 // Check if email verification is enabled
 const isEmailVerificationEnabled = email !== null && passwordOfEmail !== null && email !== '' && passwordOfEmail !== '';
 
+// Only create imapConfig if email verification is enabled
 const imapConfig = isEmailVerificationEnabled ? {
   user: email,
   password: passwordOfEmail,
@@ -79,14 +80,4 @@ export const getVerificationCode = () =>
     }
   });
 
-// Only run this code if email verification is enabled
-if (isEmailVerificationEnabled) {
-  try {
-    const result = await getVerificationCode();
-    console.log("result", result);
-  } catch (e) {
-    console.log(e);
-    console.log(imapConfig);
-    console.log(`ERROR:`, e);
-  }
-}
+// Remove the auto-execution code to prevent any connection attempts at module load time
